@@ -4,10 +4,7 @@
     <p v-if="confirmationMessage">{{ confirmationMessage }}</p>
     <form v-else @submit.prevent="register">
       <fieldset>
-        <div class="labeled-input">
-          <label for="first-name">First Name</label>
-          <input id="first-name" type="text" v-model="firstName" placeholder="First Name" />
-        </div>
+        <LabeledInput />
 
         <div class="labeled-input">
           <label for="last-name">Last Name</label>
@@ -85,8 +82,13 @@
 </template>
 
 <script>
+import LabeledInput from '@/components/LabeledInput.vue';
+
 export default {
   name: 'App',
+  components: {
+    LabeledInput,
+  },
   data() {
     return {
       firstName: '',
