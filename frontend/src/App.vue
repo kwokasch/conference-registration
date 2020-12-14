@@ -1,93 +1,108 @@
 <template>
   <div id="the-app">
     <h1>Conference Registration</h1>
-    <p v-if="confirmationMessage">{{ confirmationMessage }}</p>
+    <p class="message" v-if="confirmationMessage">{{ confirmationMessage }}</p>
     <form v-else @submit.prevent="register">
       <fieldset>
-        <LabeledInput />
-
-        <div class="labeled-input">
-          <label for="last-name">Last Name</label>
-          <input id="last-name" type="text" v-model="lastName" placeholder="Last Name" />
-        </div>
+        <LabeledInput
+          label="First Name"
+          slug="first-name"
+          placeholder="First Name"
+          :isRequired="true"
+          v-model:value="firstName"
+        />
+        <LabeledInput
+          label="Last Name"
+          slug="last-name"
+          placeholder="Last Name"
+          :isRequired="true"
+          v-model:value="lastName"
+        />
       </fieldset>
       <fieldset>
-        <div class="labeled-input">
-          <label for="email">Email</label>
-          <input id="email" type="text" v-model="email" placeholder="Email" />
-        </div>
+        <LabeledInput
+          label="Email"
+          slug="email"
+          type="email"
+          :isRequired="true"
+          placeholder="kyle@sikaeducation.com"
+          v-model:value="email"
+        />
       </fieldset>
       <fieldset>
-        <div class="labeled-input">
-          <label for="birthday">Date of Birth</label>
-          <input id="birthday" type="date" v-model="birthday" placeholder="1/1/1970" />
-        </div>
+        <LabeledInput
+          label="Birthday"
+          slug="birthday"
+          type="date"
+          :isRequired="true"
+          placeholder="1/1/1970"
+          v-model:value="birthday"
+        />
 
-        <div class="labeled-input">
-          <label for="shirt-size">Shirt Size</label>
-          <select v-model="shirtSize">
-            <option value="s">Small</option>
-            <option value="m">Medium</option>
-            <option value="l">Large</option>
-            <option value="xl">XL</option>
-            <option value="xxl">XXL</option>
-            <option value="xxxl">XXXL</option>
-            <option value="xxxxl">XXXXL</option>
-            <option value="xxxxxl">XXXXXL</option>
-          </select>
-        </div>
+        <LabeledSelect
+          label="Shirt Size"
+          slug="shirt-size"
+          :options="shirtSizes"
+          :isRequired="true"
+          v-model:value="shirtSize"
+        />
       </fieldset>
-      <fieldset class="radio-group">
-        <p>Are you attending, presenting, or both?</p>
-        <div class="labeled-input">
-          <label for="attending">Speaking</label>
-          <input
-            id="attending"
-            v-model="attendeeType"
-            type="radio"
-            name="attendee-type"
-            value="attending"
-          />
-        </div>
-        <div class="labeled-input">
-          <label for="presenting">Presenting</label>
-          <input
-            id="presenting"
-            v-model="attendeeType"
-            type="radio"
-            name="attendee-type"
-            value="presenting"
-          />
-        </div>
-        <div class="labeled-input">
-          <label for="both">Both</label>
-          <input
-            id="both"
-            v-model="attendeeType"
-            type="radio"
-            name="attendee-type"
-            value="both"
-          />
-        </div>
-      </fieldset>
-      <fieldset class="checkbox-group">
-        <div class="labeled-input">
-          <label for="mailing-list">I would like to join the mailing list</label>
-          <input id="mailing-list" type="checkbox" value="yes" v-model="mailingList" />
-        </div>
-      </fieldset>
-      <input type="submit" value="Go!" />
+      <RadioGroup prompt="Are you attending, presenting, or both?">
+        <LabeledInput
+          label="Attending"
+          slug="attending"
+          type="radio"
+          name="attendee-type"
+          value="attending"
+          v-model:value="attendeeType"
+        />
+        <LabeledInput
+          label="Presenting"
+          slug="presenting"
+          type="radio"
+          name="attendee-type"
+          value="presenting"
+          v-model:value="attendeeType"
+        />
+        <LabeledInput
+          label="Both"
+          slug="both"
+          type="radio"
+          name="attendee-type"
+          value="both"
+          v-model:value="attendeeType"
+        />
+      </RadioGroup>
+      <CheckboxGroup>
+        <LabeledInput
+          label="I would like to join the mailing list"
+          slug="mailing-list"
+          type="checkbox"
+          value="yes"
+          v-model:value="mailingList"
+        />
+      </CheckboxGroup>
+      <ButtonSubmit />
+      <p v-if="errorMessage" class="error-message message">{{ errorMessage }}</p>
     </form>
   </div>
 </template>
 
 <script>
 import LabeledInput from '@/components/LabeledInput.vue';
+import LabeledSelect from '@/components/LabeledSelect.vue';
+import ButtonSubmit from '@/components/ButtonSubmit.vue';
+import CheckboxGroup from '@/components/CheckboxGroup.vue';
+import RadioGroup from '@/components/RadioGroup.vue';
 
 export default {
   name: 'App',
   components: {
     LabeledInput,
+    LabeledSelect,
+    ButtonSubmit,
+    CheckboxGroup,
+    RadioGroup,
   },
   data() {
     return {
@@ -96,23 +111,67 @@ export default {
       email: '',
       birthday: '',
       shirtSize: '',
-      attendeeType: '',
+      attendeeType: 'both',
       mailingList: false,
       confirmationMessage: '',
+      errorMessage: '',
     };
+  },
+  computed: {
+    shirtSizes() {
+      return [{
+        value: 's',
+        label: 'Small',
+      }, {
+        value: 'm',
+        label: 'Medium',
+      }, {
+        value: 'l',
+        label: 'Large',
+      }, {
+        value: 'xl',
+        label: 'XL',
+      }, {
+        value: 'xxl',
+        label: 'XXL',
+      }, {
+        value: 'xxxl',
+        label: 'XXXL',
+      }, {
+        value: 'xxxxl',
+        label: 'XXXXL',
+      }, {
+        value: 'xxxxxl',
+        label: 'XXXXXL',
+      }];
+    },
   },
   methods: {
     register() {
-      fetch('http://localhost:8091/register', {
+      this.errorMessage = '';
+
+      const registration = {
+        firstName: this.firstName,
+        lastName: this.lastName,
+        email: this.email,
+        birthday: this.birthday,
+        shirtSize: this.shirtSize,
+        attendeeType: this.attendeeType,
+        mailingList: this.mailingList,
+      };
+
+      fetch('http://localhost:8091/registration', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ registration }),
       }).then((response) => response.json())
         .then((response) => {
+          if (response.error) throw new Error(response.error);
           this.confirmationMessage = response.message;
-        }).catch(() => {
-          this.error = 'There was a problem processing your registration.';
+        }).catch((error) => {
+          this.errorMessage = error.message;
         });
     },
   },
@@ -137,72 +196,11 @@ export default {
     justify-content: space-between;
     margin-bottom: $large;
   }
-  .labeled-input {
-    width: 100%;
-    & + .labeled-input {
-      margin-left: $baseline;
-    }
-    label {
-      margin-bottom: $font-small;
-      font-size: $font-small;
-    }
-    input, select, label {
-      display: block;
-      width: 100%;
-    }
-    input, select {
-      padding: $baseline $small;
-      border: 1px solid $grey-9;
-    }
+  .error-message {
+    color: $failure-color-5;
   }
-  .checkbox-group {
-    .labeled-input {
-      display: flex;
-      flex-flow: row wrap;
-      align-items: center;
-    }
-    label, input {
-      width: auto;
-      margin: 0;
-      display: inline-block;
-    }
-    label {
-      margin-right: $baseline;
-      font-size: $font-large;
-    }
-  }
-  .radio-group {
-    display: flex;
-    flex-flow: column nowrap;
-    background-color: $grey-9;
-    padding: $baseline $xl;
-    > .labeled-input {
-      max-width: 250px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      margin-bottom: $baseline;
-      & + .labeled-input {
-        margin-left: 0;
-      }
-      > label, > input {
-        margin: 0;
-      }
-      > label {
-        font-size: $font-large;
-      }
-      > input {
-        justify-self: start;
-        width: auto;
-      }
-    }
-  }
-  [type=submit] {
-    background-color: $primary-color-5;
-    border: none;
-    padding: $xs $xxl;
-    @include button-font;
-    cursor: pointer;
-    box-shadow: 0 2px 2px $grey-5;
+  .message {
+    max-width: 600px;
   }
 }
 </style>

@@ -1,13 +1,35 @@
 <template>
   <div class="labeled-input">
-    <label for="first-name">First Name</label>
-    <input id="first-name" type="text" v-model="firstName" placeholder="First Name" />
+    <label :for="slug">{{label}}</label>
+    <input
+      :type="type"
+      :id="slug"
+      :value="value"
+      :placeholder="placeholder"
+      :name="name"
+      :required="isRequired"
+      @input="$emit('update:value', $event.target.value)"
+    />
   </div>
 </template>
 
 <script>
 export default {
   name: 'LabeledInput',
+  props: {
+    slug: String,
+    label: String,
+    value: String,
+    name: String,
+    isRequired: Boolean,
+    type: {
+      type: String,
+      default: 'text',
+    },
+    placeholder: {
+      type: String,
+    },
+  },
 };
 </script>
 
@@ -17,18 +39,18 @@ export default {
 
 .labeled-input {
   width: 100%;
-  & + .labeled-input {
+  & + .labeled-input, & + .labeled-select {
     margin-left: $baseline;
   }
   label {
     margin-bottom: $font-small;
     font-size: $font-small;
   }
-  input, select, label {
+  input, label {
     display: block;
     width: 100%;
   }
-  input, select {
+  input {
     padding: $baseline $small;
     border: 1px solid $grey-9;
   }
