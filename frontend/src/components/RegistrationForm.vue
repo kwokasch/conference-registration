@@ -135,7 +135,6 @@ export default {
   },
   props: {
     shirtSizes: Array,
-    registration: Object,
   },
 };
 </script>

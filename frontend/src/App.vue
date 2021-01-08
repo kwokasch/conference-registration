@@ -2,9 +2,9 @@
   <div id="the-app">
     <h1>Conference Registration</h1>
     <p class="message" v-if="confirmationMessage">{{ confirmationMessage }}</p>
+    <!-- Listen for 'registration' emitted, call bodyData when it hears 'registration -->
     <RegistrationForm
         v-else @register="bodyData"
-        :registration="{firstName, lastName, email, birthday, shirtSize, attendeeType, mailingList}"
         :shirtSizes="shirtSizes"
         :errorMessage="this.errorMessage"
     />
