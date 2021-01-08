@@ -1,35 +1,23 @@
 <template>
-  <div id='the-app'>
+  <div id="the-app">
     <h1>Conference Registration</h1>
-    <p class='message' v-if='confirmationMessage'>{{ confirmationMessage }}</p>
-    <Form
-        v-else @submit.prevent='register'
-        :body='{firstName, lastName, email, birthday, shirtSize, attendeeType, mailingList}'
-        :shirtSizes='shirtSizes'
+    <p class="message" v-if="confirmationMessage">{{ confirmationMessage }}</p>
+    <RegistrationForm
+        v-else @register="bodyData"
+        :registration="{firstName, lastName, email, birthday, shirtSize, attendeeType, mailingList}"
+        :shirtSizes="shirtSizes"
+        :errorMessage="this.errorMessage"
     />
   </div>
 </template>
 
 <script>
-import Form from '@/components/Form.vue';
+import RegistrationForm from '@/components/RegistrationForm.vue';
 
 export default {
   name: 'App',
   components: {
-    Form,
-  },
-  data() {
-    return {
-      firstName: '',
-      lastName: '',
-      email: '',
-      birthday: '',
-      shirtSize: '',
-      attendeeType: 'both',
-      mailingList: false,
-      confirmationMessage: '',
-      errorMessage: '',
-    };
+    RegistrationForm,
   },
   computed: {
     shirtSizes() {
@@ -60,18 +48,29 @@ export default {
       }];
     },
   },
+  data() {
+    return {
+      body: {},
+      confirmationMessage: '',
+      errorMessage: '',
+    };
+  },
   methods: {
+    bodyData(bodyData) {
+      this.body = bodyData;
+      this.register();
+    },
     register() {
       this.errorMessage = '';
 
-      const body = {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        email: this.email,
-        birthday: this.birthday,
-        shirtSize: this.shirtSize,
-        attendeeType: this.attendeeType,
-        mailingList: this.mailingList,
+      const registration = {
+        firstName: this.body.firstName,
+        lastName: this.body.lastName,
+        email: this.body.email,
+        birthday: this.body.birthday,
+        shirtSize: this.body.shirtSize,
+        attendeeType: this.body.attendeeType,
+        mailingList: this.body.mailingList,
       };
 
       fetch('http://localhost:8091/registration', {
@@ -79,7 +78,7 @@ export default {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ body }),
+        body: JSON.stringify({ registration }),
       }).then((response) => response.json())
         .then((response) => {
           if (response.error) throw new Error(response.error);

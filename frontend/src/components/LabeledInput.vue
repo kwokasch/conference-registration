@@ -1,13 +1,13 @@
 <template>
-  <div class='labeled-input'>
-    <label :for='slug'>{{ label }}</label>
+  <div class="labeled-input">
+    <label :for="slug">{{ label }}</label>
     <input
-        :type='type'
-        :id='slug'
-        :placeholder='placeholder'
-        :value='value'
-        :name='name'
-        :required='isRequired'
+        :type="type"
+        :id="slug"
+        :placeholder="placeholder"
+        :value="value"
+        :name="name"
+        :required="isRequired"
         @input="$emit('update:value', $event.target.value)"
     >
   </div>

@@ -1,5 +1,5 @@
 <template>
-  <fieldset class='radio-group'>
+  <fieldset class="radio-group">
     <p>{{ label }}?</p>
     <slot></slot>
   </fieldset>

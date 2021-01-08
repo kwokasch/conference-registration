@@ -1,12 +1,12 @@
 <template>
-  <div class='labeled-select' :isrequired='isRequired'>
-    <label :for='slug'>{{ label }}</label>
+  <div class="labeled-select" :isrequired="isRequired">
+    <label :for="slug">{{ label }}</label>
     <select :value="value" @change="$emit('update:value', $event.target.value)">
       <option disabled=''>{{ optionLabel }}</option>
       <option
-          v-for='shirtSize in shirtSizes'
-          :key='shirtSize.value'
-          :value='shirtSize.value'
+          v-for="shirtSize in shirtSizes"
+          :key="shirtSize.value"
+          :value="shirtSize.value"
       >{{ shirtSize.label }}</option>
     </select>
   </div>

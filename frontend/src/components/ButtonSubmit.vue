@@ -1,5 +1,5 @@
 <template>
-  <input class='button-submit' :type='type' :value='value'>
+  <input class="button-submit" :type="type" :value="value">
 </template>
 
 <script>
@@ -12,5 +12,5 @@ export default {
 };
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 </style>

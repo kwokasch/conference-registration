@@ -1,5 +1,5 @@
 <template>
-  <p class='error-message message'>{{ message }}</p>
+  <p class="error-message message">{{ message }}</p>
 </template>
 
 <script>
