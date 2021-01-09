@@ -55,6 +55,7 @@ export default {
       errorMessage: '',
     };
   },
+  // bodyData is called from emitted 'registration'; this sets the data in App and calls register()
   methods: {
     bodyData(bodyData) {
       this.body = bodyData;

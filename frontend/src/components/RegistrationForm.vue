@@ -1,6 +1,8 @@
 <template>
+  <!-- On submit, emit 'register' and the 'body' object (handle state in this component) -->
   <form @submit.prevent="$emit('register', body)">
     <fieldset>
+      <!-- Value binding done within child components -->
       <LabeledInput
           slug="first-name"
           label="First Name"
@@ -135,6 +137,7 @@ export default {
   },
   props: {
     shirtSizes: Array,
+    errorMessage: String,
   },
 };
 </script>
